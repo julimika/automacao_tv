@@ -6,37 +6,50 @@ from config import (username, password)
 #fluxo de login
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False)
-    Page = browser.new_page()
+    Page = browser.new_page();
+
+    Page.goto("https://prd-tv-react.watch.tv.br")
+    Page.get_by_role("button", name="Entrar").click()
     time.sleep(5)
-    Page.goto("https://prd-tv-react.watch.tv.br/login-screen")
-    time.sleep(5)
-    Page.get_by_role("textbox", name="Digite seu e-mail").fill(username)
+    Page.get_by_role("button", name="Login por email e senha").click()
+    Page.get_by_role("textbox", name="Digite seu email").fill(username)
     Page.get_by_role("textbox", name="Digite sua senha").fill(password)
+    # Page.set_viewport_size({"width": 1920, "height": 1080})
     Page.get_by_role("button", name="Entrar").click()
     time.sleep(5)
     Page.locator('xpath=//*[@id="App"]/section/div/div[1]/div').dblclick()
     time.sleep(10)
-    #validação dos carrosséis da home
-    Page.get_by_title("Canais Ao vivo")
-    print("Retornando ao vivo")
-    Page.get_by_title("Lançamentos")
-    print("Retornando lançamentos")
-    Page.get_by_title("Paramount")
-    print("Paramount retornando")
-    Page.get_by_title("Mais assistidos")
-    print("Mais assistidos retornando")
-    Page.get_by_title("CNN")
-    print("CNN Retornando")
-    Page.get_by_title("Awesomeness")   
-    print("Awesomeness retornando")
-    Page.get_by_title("Infantil")   
-    print("Infantil retornando")
-    Page.get_by_title("Sugestões para Você")   
-    print("Sugestões para Você retornando")
-    Page.get_by_title("Minha Lista")
-    print("Minha lista retornando")
-    
-    Page.get_by_alt_text("Ícone do menu Filmes").click()
+
+    #validação carrosséis da home
+    def check_visibility(Page, carousels):
+        visibility = {}
+        for carousel in carousels:
+            element = Page.query_selector(f"text={carousel}")
+            visibility[carousel] = element is not None and element.is_visible() if element else False
+        return visibility
+
+    carousels = [
+        "Canais Ao vivo",
+        "Continuar assistindo",
+        "Lançamentos",
+        "Paramount",
+        "Mais assistidos",
+        "Para maratonar",
+        "CNN",
+        "Tramas emocionantes",
+        "Infantil", 
+        "SUgestões para Você",
+        "Minha Lista"
+    ] 
+
+    visibility_status = check_visibility(Page, carousels)
+
+    for carousel, is_visible in visibility_status.items():
+        print(f"Carrossel '{carousel}' está retornando?: {is_visible}")   
+
+  
+
+
     time.sleep(5)
 
     
