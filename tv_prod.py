@@ -3,11 +3,10 @@ from playwright.sync_api import Page, expect
 import time
 from config import (username, password)
 
-#fluxo de login
+#login 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False)
     Page = browser.new_page();
-
     Page.goto("https://prd-tv-react.watch.tv.br")
     Page.get_by_role("button", name="Entrar").click()
     time.sleep(5)
@@ -20,7 +19,7 @@ with sync_playwright() as p:
     Page.locator('xpath=//*[@id="App"]/section/div/div[1]/div').dblclick()
     time.sleep(10)
 
-    #validação carrosséis da home
+    #home carousels
     def check_visibility(Page, carousels):
         visibility = {}
         for carousel in carousels:
@@ -47,12 +46,36 @@ with sync_playwright() as p:
     for carousel, is_visible in visibility_status.items():
         print(f"Carrossel '{carousel}' está retornando?: {is_visible}")   
 
-  
-
 
     time.sleep(5)
 
+    #player svod and movies page
+    Page.locator("css=#App > div > div.sc-fIGJwM.kUyJpv > div > div").click()
+    time.sleep(5)
+
+    Page.get_by_role("button", name="Filmes").click()
+    time.sleep(5)
+
+    Page.locator("#MOVIE_CARD_0").click() #the identifier of the first content in grid. can change the content but the id will be the same
+    time.sleep(5)
+
+    def watch_and_keepwatching(Page):
+        button1 =  Page.get_by_role("button", name="Assistir")
+        button2 = Page.get_by_role("button", name="Continuar assistindo")
+
+        if button1.is_visible():
+            button1.click()
+        elif button2.is_visible():
+            button2.click()
+        else:
+            print("não foi possível reproduzir o conteúdo")
+
+    watch_and_keepwatching(Page)
+
+    time.sleep(20)
     
+    #epg
+
     
 
     
