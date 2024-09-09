@@ -50,7 +50,7 @@ with sync_playwright() as p:
     time.sleep(5)
 
     #player svod and movies page
-    Page.locator("css=#App > div > div.sc-fIGJwM.kUyJpv > div > div").click()
+    Page.locator("css=#App > div > div.sc-cHMHOW.MfNjB > div > div").click()
     time.sleep(5)
 
     Page.get_by_role("button", name="Filmes").click()
@@ -74,7 +74,7 @@ with sync_playwright() as p:
 
     time.sleep(20)
     
-    #epg
+    # epg
 
     
 
